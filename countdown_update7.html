@@ -1,0 +1,110 @@
+<h2 id="score_text" font="Arial"></h2>
+<canvas id="game_canvas"></canvas>
+<script>
+//the code below is to allow javascript to interact with the html elements
+grid_width = 10; //Width of grid, measured in cells. If it's set to N, then the game is played on an N x N grid
+cell_width = 40; //physical width of a single cell
+canvas = document.getElementById('game_canvas');
+ctx = canvas.getContext('2d');
+canvas.width = canvas.height = grid_width*cell_width; 
+
+score_text = document.getElementById('score_text');
+
+//setup the initial gamestate
+player_x = 0;
+player_y = 0;
+
+function set_target(){
+  target_x = Math.floor(Math.random()*grid_width);
+  target_y = Math.floor(Math.random()*grid_width);
+  target_countdown = 50;
+}
+set_target();
+
+last_key_press = "";
+
+score = 0;
+high_score = 0;
+
+//just a bit of code to make sure last_key_press always stores the code (just a string) for the last key pressed
+document.addEventListener('keydown', function(e) {last_key_press = e.code;});
+
+//functions for drawing or writing stuff
+function draw_cell(x,y,colour) {
+  ctx.fillStyle = colour;
+  ctx.fillRect(x*cell_width, y*cell_width, cell_width, cell_width);
+}
+
+function draw_countdown() {
+  ctx.font = `${cell_width}px Arial`;
+  ctx.fillStyle = "white";
+  ctx.fillText(target_countdown, target_x*cell_width, (target_y+1)*cell_width, cell_width);
+}
+
+function draw_player() {
+  draw_cell(player_x,player_y,'green');
+}
+
+function draw_target() {
+  draw_cell(target_x,target_y,'red');
+  draw_countdown();
+}
+
+function write_scores() {
+  score_text.innerHTML = `High Score:${high_score} | Score:${score}`;
+}
+
+//the code in this function will be executed repeatedly. It will update the gamestate and the display
+function game_iteration() {
+  //UPDATE THE GAMESTATE
+  switch(last_key_press){
+    case "ArrowRight": 
+      if(player_x<=grid_width-2){
+        player_x+=1;
+      }
+      break;
+    case "ArrowLeft":
+      if(player_x>=1){
+        player_x-=1;
+      }
+      break;
+    case "ArrowUp":
+      if(player_y>=1){
+        player_y-=1;
+      }
+      break;
+    case "ArrowDown":
+      if(player_y<=grid_width-2){
+        player_y+=1;
+      }
+      break;
+  }
+
+  //countdown the target
+  target_countdown-=1;
+  //if the countdown goes below 0, reset the target and set the score back to 0
+  if(target_countdown<0){
+    set_target();
+    score = 0;
+  }
+
+  //check if player met target, if so, then make new target
+  if(player_x==target_x && player_y==target_y){
+    set_target();
+    score+=1;
+  }
+
+  //UPDATE THE DISPLAY
+  //make the whole canvas black
+  ctx.fillStyle = "black";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  //draw the target and the player
+  draw_player();
+  draw_target();
+  //write the scores
+  write_scores();
+}
+
+delay = 500;//the amount of time (in milliseconds) between changes to the gamestate. A lower delay will speed the game up
+setInterval(game_iteration,delay);
+</script>
