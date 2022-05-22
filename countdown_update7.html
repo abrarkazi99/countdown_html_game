@@ -57,6 +57,7 @@ function write_scores() {
 //the code in this function will be executed repeatedly. It will update the gamestate and the display
 function game_iteration() {
   //UPDATE THE GAMESTATE
+  //move player depending on direction of last key pressed
   switch(last_key_press){
     case "ArrowRight": 
       if(player_x<=grid_width-2){
@@ -88,7 +89,7 @@ function game_iteration() {
     score = 0;
   }
 
-  //check if player met target, if so, then make new target
+  //check if player captured target, if so, then make new target and increase the score by 1
   if(player_x==target_x && player_y==target_y){
     set_target();
     score+=1;

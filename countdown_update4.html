@@ -67,6 +67,7 @@ function game_iteration() {
   //show the last key that was pressed
   key_press_text.innerHTML = last_key_press;
   
+  //move player depending on direction of last key pressed
   switch(last_key_press){
     case "ArrowRight": 
       if(player_x<=grid_width-2){
@@ -90,7 +91,7 @@ function game_iteration() {
       break;
   }
 
-  //check if player met target, if so, then make new target
+  //check if player captured target, if so, then make new target
   if(player_x==target_x && player_y==target_y){
     set_target();
   }

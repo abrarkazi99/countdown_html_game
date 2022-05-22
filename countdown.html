@@ -90,7 +90,7 @@ function game_iteration() {
     score=0;
   }
 
-  //check if player met target, if so, then make new target and increase the score by 1
+  //check if player captured target, if so, then make new target and increase the score by 1
   if(player_x==target_x && player_y==target_y){
     set_target();
     score+=1;
